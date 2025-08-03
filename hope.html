@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReForge - ReForge your life</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Montserrat:wght@400;700&display=swap');
+        body {
+            font-family: 'Montserrat', cursive, sans-serif;
+            background: #1a2b1a url("struggle-b-04.jpg") no-repeat center center fixed;
+            background-size: cover;
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+        }
+        .logo-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(244,255,244,0.78);
+            padding: 32px 0 16px 0;
+        }
+        .tab-bar {
+            display: flex;
+            justify-content: center;
+            background: rgba(244,255,244,0.78);
+            box-shadow: 0 2px 12px #e0f7e0cc;
+            border-radius: 0 0 32px 32px;
+            margin-bottom: 32px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .tab-content {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.82);
+            border-radius: 32px;
+            box-shadow: 0 4px 32px #e0f7e0cc;
+            padding: 40px 32px 32px 32px;
+            margin-bottom: 48px;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .tab-btn {
+            font-family: 'Montserrat',sans-serif;
+            font-size: 1.1em;
+            background: linear-gradient(90deg, #e0f7e0 0%, #b2dfdb 100%);
+            border: none;
+            color: #14532d;
+            padding: 16px 32px;
+            margin: 0 4px;
+            border-radius: 18px 18px 0 0;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #e0f7e0cc;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        }
+        .tab-btn.active, .tab-btn:focus {
+            background: linear-gradient(90deg, #b2dfdb 0%, #e0f7e0 100%);
+            color: #1a2b1a;
+            font-weight: bold;
+            outline: none;
+            box-shadow: 0 4px 16px #b2dfdbcc;
+        }
+        .form-container, #output {
+            background: rgba(255,255,255,0.65);
+            max-width: 900px;
+            min-width: 350px;
+            margin: 60px auto 0 auto;
+            padding: 48px 48px 32px 48px;
+            border-radius: 18px;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.35);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .growth-advice {
+            background: rgba(255,255,255,0.72);
+            color: #14532d;
+            border-radius: 18px;
+            padding: 18px 24px;
+            margin: 24px 0;
+            box-shadow: 0 2px 12px #0a2342cc;
+        }
+        .info-summary {
+            background: rgba(255,255,255,0.72);
+            color: #14532d;
+            border-radius: 18px;
+            padding: 18px 24px;
+            margin: 24px 0;
+            box-shadow: 0 2px 12px #0a2342cc;
+        }
+        .habit-item {
+            background: rgba(244,255,244,0.65);
+            border-radius: 12px;
+            padding: 10px 18px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: 'Inter', 'Roboto', Arial, sans-serif;
+            color: #14532d;
+        }
+        .journal-entry {
+            background: rgba(244,255,244,0.65);
+            border-radius: 12px;
+            padding: 16px 18px;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 8px #e0f7e0cc;
+            color: #14532d;
+        }
+        .pillar-charts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px 32px;
+            justify-items: center;
+            margin-bottom: 32px;
+        }
+        .pillar-chart-box {
+            background: rgba(244,255,244,0.65);
+            border-radius: 24px;
+            box-shadow: 0 2px 16px #e0f7e0cc;
+            padding: 24px 18px 18px 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 260px;
+        }
+        button, .habit-btn {
+            font-family: 'Montserrat',sans-serif;
+            font-size: 1em;
+            background: linear-gradient(90deg, #a7ffeb 0%, #64b5f6 100%);
+            color: #14532d;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 28px;
+            margin: 8px 0;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #b2dfdbcc;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        }
+        button:hover, .habit-btn:hover {
+            background: linear-gradient(90deg, #64b5f6 0%, #a7ffeb 100%);
+            color: #0d3b2e;
+            box-shadow: 0 4px 16px #64b5f6cc;
+        }
+        input[type="text"], input[type="number"], input[type="email"], input[type="password"], textarea, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid #b2dfdb;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.95);
+            font-size: 1.08em;
+            margin-top: 6px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px #e0f7e022;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+        input[type="text"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="password"]:focus, textarea:focus, select:focus {
+            border: 2px solid #64b5f6;
+            outline: none;
+            box-shadow: 0 4px 16px #b2dfdb44;
+            background: #f0faff;
+        }
+    </style>
+    <div class="logo-bar">
+        <div class="logo-circle" style="background:#14532d;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-right:18px;"><span style="font-family:'Pacifico',cursive;font-size:2.2em;color:#fff;">R</span></div>
+        <span class="site-title" style="font-family:'Pacifico',cursive;font-size:2.2em;color:#14532d;margin-right:18px;">ReForge</span>
+        <span class="site-slogan" style="font-family:'Montserrat',sans-serif;font-size:1.1em;color:#388e3c;">ReForge your life</span>
+    </div>
+</head>
+<body>
+    <div class="tab-bar">
+        <button class="tab-btn active" data-tab="patientTab">Patient Intake</button>
+        <button class="tab-btn" data-tab="pillarTab">Pillar Tracker</button>
+        <button class="tab-btn" data-tab="growthTab">Growth</button>
+        <button class="tab-btn" data-tab="habitTab">Habit Planner</button>
+        <button class="tab-btn" data-tab="journalTab">Journal</button>
+    </div>
+    <div id="journalTab" class="tab-content">
+        <h2>Journal</h2>
+        <form id="journalForm" style="margin-bottom:24px;">
+            <div class="input-group">
+                <label>Today's Entry:</label>
+                <textarea id="journalInput" rows="4" placeholder="Write your thoughts, feelings, or progress..."></textarea>
+            </div>
+            <button type="submit">Add Entry</button>
+        </form>
+        <div id="journalEntries"></div>
+    </div>
+    <div id="patientTab" class="tab-content active">
+        <h2>Patient Intake Questionnaire</h2>
+        <div id="patientStepper" style="background:#fff0f6;padding:32px 24px;border-radius:18px;max-width:500px;width:100%;box-shadow:0 2px 16px #f8bbd0;margin:0 auto;">
+            <div id="patientStep"></div>
+            <div style="margin-top:24px;text-align:right;">
+                <button id="patientPrev" style="display:none;">Back</button>
+                <button id="patientNext">Next</button>
+            </div>
+        </div>
+        <div id="patientSummary" style="display:none;background:#e0f7fa;padding:32px 24px;border-radius:18px;max-width:600px;width:100%;box-shadow:0 2px 16px #b2dfdb;margin:32px auto 0 auto;">
+            <h2>Patient Details Summary</h2>
+            <div id="patientSummaryContent"></div>
+            <div style="margin-top:24px;display:flex;justify-content:flex-end;gap:12px;">
+                <button id="redoPatientData">Redo Input Data</button>
+                <button id="goToGrowth">Go to Growth Page</button>
+            </div>
+        </div>
+    </div>
+    <div id="growthTab" class="tab-content">
+        <h2>Growth</h2>
+        <div id="growthContent"></div>
+    </div>
+    <div id="habitTab" class="tab-content">
+        <h2>Habit Planner</h2>
+        <form id="habitForm" style="margin-bottom:24px;">
+            <div class="input-group">
+                <label>New Habit:</label>
+                <input type="text" id="habitInput" placeholder="e.g. Drink water, Stretch, Meditate">
+            </div>
+            <button type="submit">Add Habit</button>
+        </form>
+        <div class="habit-list" id="habitList"></div>
+        <button id="openPlannerBtn" style="margin-top:18px;margin-bottom:18px;background:linear-gradient(90deg,#f0f7fa 0%,#b2dfdb 100%);color:#14532d;font-weight:bold;">Open Specialist Life Planner</button>
+        <!-- Gemini AI planner removed -->
+    </div>
+    <div class="tab-content" id="pillarTab">
+        <h2>Pillar Tracker</h2>
+        <form id="pillarForm">
+            <div class="pillar-charts">
+                <div class="pillar-chart-box">
+                    <div class="pillar-chart-title">🧠 Cognitive</div>
+                    <canvas id="cognitiveRadar" width="260" height="220"></canvas>
+                </div>
+                <div class="pillar-chart-box">
+                    <div class="pillar-chart-title">🏃‍♂️ Physical</div>
+                    <canvas id="physicalRadar" width="260" height="220"></canvas>
+                </div>
+                <div class="pillar-chart-box">
+                    <div class="pillar-chart-title">💖 Emotional</div>
+                    <canvas id="emotionalRadar" width="260" height="220"></canvas>
+                </div>
+                <div class="pillar-chart-box">
+                    <div class="pillar-chart-title">🤝 Social</div>
+                    <canvas id="socialRadar" width="260" height="220"></canvas>
+                </div>
+            </div>
+            <details style="margin-top:32px;">
+                <summary>🧠 Cognitive</summary>
+                <div class="input-group">
+                    <label>Attention/Focus (Continuous focus duration in seconds):
+                        <input type="number" name="cognitive_focus" min="0">
+                    </label>
+                </div>
+                <div class="input-group">
+                    <label>Memory (Digit recall count n):
+                        <input type="number" name="cognitive_memory" min="0">
+                    </label>
+                </div>
+                <div class="input-group">
+                    <label>Reaction time (Button click speed in ms):
+                        <input type="number" name="cognitive_reaction" min="0">
+                    </label>
+                </div>
+                <div class="input-group">
+                    <label>Cognitive Fatigue (0-10):
+                        <input type="number" name="cognitive_fatigue" min="0" max="10">
+                    </label>
+                </div>
+            </details>
+            <details>
+                <summary>🏃‍♂️ Physical</summary>
+                <div class="input-group">
+                    <label>Speed/Agility (Timed walk/run test in meters):
+                        <input type="number" name="physical_speed" min="0">
+                    </label>
+                </div>
+                <div class="input-group">
+                    <label>Balance (One-leg stand length in seconds):
+                        <input type="number" name="physical_balance" min="0">
+                    </label>
+                </div>
+                <div class="input-group">
+                    <label>Pain (VAS score 0-10):
+                        <input type="number" name="physical_pain" min="0" max="10">
+                    </label>
+                </div>
+                <div class="input-group">
+                    <label>Flexibility (Range of motion):
+                        <input type="number" name="physical_flexibility" min="0">
+                    </label>
+                </div>
+                <div class="input-group">
+                    <label>Activity Level (Hours of activity):
+                        <input type="number" name="physical_activity" min="0">
+                    </label>
+                </div>
+                <div class="input-group">
+                    <label>Sleep (Hours & Quality):
+                        <input type="number" name="physical_sleep_hours" min="0" placeholder="Hours">
+                        <input type="text" name="physical_sleep_quality" placeholder="Quality">
+                    </label>
+                </div>
+                <div class="input-group">
+                    <label>Diet (Macros, calories, micros, water):
+                        <input type="text" name="physical_diet" placeholder="e.g. 2000kcal, 100g protein, ...">
+                    </label>
+                </div>
+            </details>
+            <details>
+                <summary>💖 Emotional</summary>
+                <div class="input-group">
+                    <label>Depression (PHQ Score 0-27):
+                        <input type="number" name="emotional_phq" min="0" max="27">
+                    </label>
+                </div>
+                <div class="input-group">
+                    <label>Anxiety (GAD Score 0-21):
+                        <input type="number" name="emotional_gad" min="0" max="21">
+                    </label>
+                </div>
+                <div class="input-group">
+                    <label>Mood (Likert Scale -2 to +2):
+                        <input type="number" name="emotional_mood" min="-2" max="2">
+                    </label>
+                </div>
+                <div class="input-group">
+                    <label>Sentiment (Score -1 to +1):
+                        <input type="number" name="emotional_sentiment" min="-1" max="1" step="0.01">
+                    </label>
+                </div>
+            </details>
+            <details>
+                <summary>🤝 Social</summary>
+                <div class="input-group">
+                    <label>Engagement (Social interactions per week):
+                        <input type="number" name="social_engagement" min="0">
+                    </label>
+                </div>
+                <div class="input-group">
+                    <label>Confidence (Likert Scale 0-10):
+                        <input type="number" name="social_confidence" min="0" max="10">
+                    </label>
+                </div>
+            </details>
+            <button type="submit">Show Progress</button>
+        </form>
+    </div>
+
+    <div id="growthTab" class="tab-content">
+        <h2>Growth</h2>
+        <div id="growthContent"></div>
+    </div>
+
+    <div id="habitTab" class="tab-content">
+        <h2>Habit Planner</h2>
+        <form id="habitForm" style="margin-bottom:24px;">
+            <div class="input-group">
+                <label>New Habit:</label>
+                <input type="text" id="habitInput" placeholder="e.g. Drink water, Stretch, Meditate">
+            </div>
+            <button type="submit">Add Habit</button>
+        </form>
+        <div class="habit-list" id="habitList"></div>
+    </div>
+
+    <!-- Journal tab removed in revert -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    // Tab switching logic
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.onclick = function() {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.tab).classList.add('active');
+            if (btn.dataset.tab === 'growthTab') renderGrowthTab();
+            if (btn.dataset.tab === 'habitTab') renderHabits();
+            if (btn.dataset.tab === 'journalTab') renderJournalEntries();
+        };
+    });
+
+    // --- Journal logic ---
+    const journalForm = document.getElementById('journalForm');
+    const journalInput = document.getElementById('journalInput');
+    const journalEntriesDiv = document.getElementById('journalEntries');
+    let journalEntries = JSON.parse(localStorage.getItem('journalEntries') || '[]');
+
+    function renderJournalEntries() {
+        if (!journalEntriesDiv) return;
+        if (!journalEntries || !Array.isArray(journalEntries)) journalEntries = [];
+        journalEntriesDiv.innerHTML = '';
+        if (journalEntries.length === 0) {
+            journalEntriesDiv.innerHTML = '<div style="color:#888;font-style:italic;">No entries yet.</div>';
+            return;
+        }
+        journalEntries.slice().reverse().forEach(entry => {
+            const div = document.createElement('div');
+            div.className = 'journal-entry';
+            div.innerHTML = `<div style='font-size:0.98em;'>${entry.text.replace(/\n/g,'<br>')}</div><div style='font-size:0.85em;color:#388e3c;margin-top:6px;'>${entry.date}</div>`;
+            journalEntriesDiv.appendChild(div);
+        });
+    }
+
+    if (journalForm) {
+        journalForm.onsubmit = function(e) {
+            e.preventDefault();
+            const text = journalInput.value.trim();
+            if (text) {
+                const date = new Date().toLocaleString();
+                journalEntries.push({ text, date });
+                localStorage.setItem('journalEntries', JSON.stringify(journalEntries));
+                journalInput.value = '';
+                renderJournalEntries();
+            }
+        };
+    }
+    // Render on load if journal tab is visible
+    if (document.getElementById('journalTab').classList.contains('active')) {
+        renderJournalEntries();
+    }
+        // Patient Intake Stepper Logic
+const patientQuestions = [
+    { label: 'What is your name?', name: 'name', type: 'text', required: true },
+    { label: 'How old are you?', name: 'age', type: 'number', min: 1, max: 120, required: true },
+    { label: 'What is your gender?', name: 'gender', type: 'select', options: ['Male','Female','Other','Prefer not to say'], required: true },
+    { label: 'Injury/Trauma Type', name: 'injuryType', type: 'select', options: [
+        { group: 'Physical Trauma', options: [
+            { value: 'TBI', label: 'Traumatic Brain Injury (TBI)' },
+            { value: 'SCI', label: 'Spinal Cord Injury (SCI)' },
+            { value: 'Amputation', label: 'Limb Amputation' },
+            { value: 'Burn', label: 'Severe Burns' },
+            { value: 'Fracture', label: 'Major Bone Fracture' },
+            { value: 'Stroke', label: 'Stroke' },
+            { value: 'Orthopedic', label: 'Major Orthopedic Injury' },
+            { value: 'OtherPhysical', label: 'Other Physical Trauma' }
+        ] },
+        { group: 'Mental Trauma', options: [
+            { value: 'PTSD', label: 'Post-Traumatic Stress Disorder (PTSD)' },
+            { value: 'Depression', label: 'Major Depression' },
+            { value: 'Anxiety', label: 'Severe Anxiety Disorder' },
+            { value: 'Psychosis', label: 'Psychosis/Schizophrenia' },
+            { value: 'Substance', label: 'Substance Use Disorder' },
+            { value: 'OtherMental', label: 'Other Mental Trauma' }
+        ] },
+        { group: 'Chronic Illness/Other', options: [
+            { value: 'Cancer', label: 'Cancer Diagnosis' },
+            { value: 'Neurodegenerative', label: 'Neurodegenerative Disease' },
+            { value: 'ChronicPain', label: 'Chronic Pain Syndrome' },
+            { value: 'Other', label: 'Other (please specify below)' }
+        ] }
+    ], required: true },
+    { label: "If 'Other', please specify", name: 'injuryOther', type: 'text', required: false, dependsOn: { name: 'injuryType', values: ['Other','OtherPhysical','OtherMental'] } },
+    { label: 'Long-term Goal', name: 'goals', type: 'textarea', required: false },
+    { label: 'Cognitive Fatigue (0-10)', name: 'cognitiveFatigue', type: 'range', min: 0, max: 10, required: true },
+    { label: 'Pain (VAS 0-10)', name: 'pain', type: 'range', min: 0, max: 10, required: true },
+    { label: 'Activity Level (0-10)', name: 'activityLevel', type: 'range', min: 0, max: 10, required: true },
+    { label: 'Sleep (hours)', name: 'sleep', type: 'number', min: 0, max: 24, required: true },
+    { label: 'Depression (PHQ 0-27)', name: 'phq', type: 'range', min: 0, max: 27, required: true },
+    { label: 'Anxiety (GAD 0-21)', name: 'gad', type: 'range', min: 0, max: 21, required: true },
+    { label: 'Mood (Likert -2 to +2)', name: 'mood', type: 'range', min: -2, max: 2, required: true },
+    { label: 'Sentiment (-1 to +1)', name: 'sentiment', type: 'number', min: -1, max: 1, step: 0.01, required: true },
+    { label: 'Engagement (interactions/week)', name: 'engagement', type: 'number', min: 0, max: 50, required: true },
+    { label: 'Confidence (Likert 0-10)', name: 'confidence', type: 'range', min: 0, max: 10, required: true }
+];
+let patientStepIndex = 0;
+let patientAnswers = JSON.parse(localStorage.getItem('patientAnswers') || '{}');
+function renderPatientStep() {
+    let q = patientQuestions[patientStepIndex];
+    // Handle conditional question
+    if (q.dependsOn) {
+        const dep = patientAnswers[q.dependsOn.name];
+        if (!q.dependsOn.values.includes(dep)) {
+            patientStepIndex++;
+            renderPatientStep();
+            return;
+        }
+    }
+    let html = `<label style='width:100%;text-align:left;'>${q.label}`;
+    if (q.type === 'select') {
+        html += `<select id="qinput" name="${q.name}" ${q.required ? 'required' : ''} style='width:100%;margin-top:8px;'>`;
+        html += `<option value="" disabled selected>Select...</option>`;
+        if (Array.isArray(q.options) && typeof q.options[0] === 'object' && q.options[0].group) {
+            q.options.forEach(group => {
+                html += `<optgroup label="${group.group}">`;
+                group.options.forEach(opt => {
+                    html += `<option value="${opt.value}">${opt.label}</option>`;
+                });
+                html += `</optgroup>`;
+            });
+        } else {
+            q.options.forEach(opt => html += `<option value="${opt}">${opt}</option>`);
+        }
+        html += `</select>`;
+    } else if (q.type === 'textarea') {
+        html += `<textarea id="qinput" name="${q.name}" rows="2" style='margin-top:8px;width:100%;'>${patientAnswers[q.name]||''}</textarea>`;
+    } else if (q.type === 'range') {
+        html += `<input id="qinput" name="${q.name}" type="range" min="${q.min}" max="${q.max}" value="${patientAnswers[q.name]||q.min}" style='width:80%;margin-top:8px;'> <output id="qoutput">${patientAnswers[q.name]||q.min}</output>`;
+    } else {
+        html += `<input id="qinput" name="${q.name}" type="${q.type}" ${q.min !== undefined ? 'min="'+q.min+'"' : ''} ${q.max !== undefined ? 'max="'+q.max+'"' : ''} ${q.step !== undefined ? 'step="'+q.step+'"' : ''} ${q.required ? 'required' : ''} value="${patientAnswers[q.name]||''}" style='margin-top:8px;width:100%;'>`;
+    }
+    html += `</label>`;
+    document.getElementById('patientStep').innerHTML = html;
+    document.getElementById('patientPrev').style.display = patientStepIndex > 0 ? '' : 'none';
+    document.getElementById('patientNext').textContent = patientStepIndex === patientQuestions.length-1 ? 'Finish' : 'Next';
+    // Range output sync
+    if (q.type === 'range') {
+        const input = document.getElementById('qinput');
+        const output = document.getElementById('qoutput');
+        input.addEventListener('input', () => output.value = input.value);
+    }
+}
+document.getElementById('patientNext').onclick = function() {
+    const q = patientQuestions[patientStepIndex];
+    const input = document.getElementById('qinput');
+    let val = input.value;
+    if (q.required && (val === '' || val === null)) {
+        input.style.border = '2px solid red';
+        return;
+    }
+    if (q.type === 'number' || q.type === 'range') val = Number(val);
+    patientAnswers[q.name] = val;
+    if (patientStepIndex < patientQuestions.length-1) {
+        patientStepIndex++;
+        renderPatientStep();
+    } else {
+        // Save and show summary
+        localStorage.setItem('patientAnswers', JSON.stringify(patientAnswers));
+        showPatientSummary();
+    }
+};
+document.getElementById('patientPrev').onclick = function() {
+    if (patientStepIndex > 0) {
+        patientStepIndex--;
+        renderPatientStep();
+    }
+};
+function showPatientSummary() {
+    document.getElementById('patientStepper').style.display = 'none';
+    document.getElementById('patientSummary').style.display = 'block';
+    let html = `<div style="background:linear-gradient(90deg,#e0f7fa 0%,#b2dfdb 100%);border-radius:18px;padding:24px 32px;box-shadow:0 2px 16px #b2dfdb;max-width:500px;margin:0 auto;">
+        <h3 style="color:#14532d;margin-bottom:18px;text-align:center;">Patient Details</h3>
+        <ul style="padding-left:0;list-style:none;">`;
+    patientQuestions.forEach(q => {
+        if (q.dependsOn) {
+            const dep = patientAnswers[q.dependsOn.name];
+            if (!q.dependsOn.values.includes(dep)) return;
+        }
+        let v = patientAnswers[q.name];
+        if (v !== '' && v !== undefined) {
+            html += `<li style="margin-bottom:10px;"><span style="font-weight:bold;color:#388e3c;">${q.label}:</span> <span style="color:#14532d;">${v}</span></li>`;
+        }
+    });
+    html += '</ul></div>';
+    document.getElementById('patientSummaryContent').innerHTML = html;
+    // Attach Go to Growth button logic
+    setTimeout(() => {
+        const btn = document.getElementById('goToGrowth');
+        if (btn) {
+            btn.onclick = function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+                document.querySelector('.tab-btn[data-tab="growthTab"]').classList.add('active');
+                document.getElementById('growthTab').classList.add('active');
+                renderGrowthTab();
+            };
+        }
+    }, 0);
+}
+document.getElementById('redoPatientData').onclick = function() {
+    localStorage.removeItem('patientAnswers');
+    patientAnswers = {};
+    patientStepIndex = 0;
+    document.getElementById('patientStepper').style.display = 'block';
+    document.getElementById('patientSummary').style.display = 'none';
+    renderPatientStep();
+};
+// On load, show patient intake or summary
+window.onload = function() {
+    if (Object.keys(patientAnswers).length === patientQuestions.length) {
+        document.getElementById('patientStepper').style.display = 'none';
+        document.getElementById('patientSummary').style.display = 'block';
+        showPatientSummary();
+    } else {
+        document.getElementById('patientStepper').style.display = 'block';
+        document.getElementById('patientSummary').style.display = 'none';
+        renderPatientStep();
+    }
+};
+        // Helper: interpolate color from dark red to bright green
+        function getBarColor(val, min, max) {
+            // 0 = #8B0000 (dark red), 10 = #00FF00 (bright green)
+            // min/max can be different for each stat
+            if (typeof val !== 'number' || isNaN(val)) return '#ddd';
+            const norm = (val - min) / (max - min);
+            const t = Math.max(0, Math.min(1, norm));
+            const r1 = 139, g1 = 0, b1 = 0; // dark red
+            const r2 = 0, g2 = 255, b2 = 0; // green
+            const r = Math.round(r1 + (r2 - r1) * t);
+            const g = Math.round(g1 + (g2 - g1) * t);
+            const b = Math.round(b1 + (b2 - b1) * t);
+            return `rgb(${r},${g},${b})`;
+        }
+
+        // Stat config for progress bars
+        const statConfig = [
+            { name: 'cognitive_focus', label: 'Attention/Focus', min: 0, max: 600 },
+            { name: 'cognitive_memory', label: 'Memory', min: 0, max: 20 },
+            { name: 'cognitive_reaction', label: 'Reaction time', min: 100, max: 1000, invert: true },
+            { name: 'cognitive_fatigue', label: 'Cognitive Fatigue', min: 0, max: 10 },
+            { name: 'physical_speed', label: 'Speed/Agility', min: 0, max: 1000 },
+            { name: 'physical_balance', label: 'Balance', min: 0, max: 120 },
+            { name: 'physical_pain', label: 'Pain', min: 0, max: 10, invert: true },
+            { name: 'physical_flexibility', label: 'Flexibility', min: 0, max: 100 },
+            { name: 'physical_activity', label: 'Activity Level', min: 0, max: 24 },
+            { name: 'physical_sleep_hours', label: 'Sleep (Hours)', min: 0, max: 12 },
+            { name: 'social_engagement', label: 'Engagement', min: 0, max: 30 },
+            { name: 'social_confidence', label: 'Confidence', min: 0, max: 10 },
+            { name: 'emotional_phq', label: 'Depression (PHQ)', min: 0, max: 27, invert: true },
+            { name: 'emotional_gad', label: 'Anxiety (GAD)', min: 0, max: 21, invert: true },
+            { name: 'emotional_mood', label: 'Mood', min: -2, max: 2 },
+            { name: 'emotional_sentiment', label: 'Sentiment', min: -1, max: 1 },
+        ];
+
+        // Pillar radar chart logic (individual charts)
+        let cognitiveRadar = null, physicalRadar = null, emotionalRadar = null, socialRadar = null;
+        let dailyGrowthData = JSON.parse(localStorage.getItem('dailyGrowthData') || '[]');
+        document.getElementById('pillarForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = {};
+            let valid = true;
+            let firstInvalid = null;
+            // Validation: require all pillar fields (except sleep quality/diet)
+            statConfig.forEach(stat => {
+                let input = form[stat.name];
+                let val = input ? input.value : '';
+                if (val === '' || val === null || isNaN(val)) {
+                    valid = false;
+                    if (input) {
+                        input.style.border = '2px solid red';
+                        if (!firstInvalid) firstInvalid = input;
+                    }
+                } else {
+                    input.style.border = '';
+                    val = parseFloat(val);
+                    data[stat.name] = val;
+                }
+            });
+            if (!valid) {
+                if (firstInvalid) firstInvalid.focus();
+                alert('Please fill in all required fields for the pillar tracker.');
+                return;
+            }
+            // Add sleep quality and diet as text
+            data['physical_sleep_quality'] = form['physical_sleep_quality'] ? form['physical_sleep_quality'].value : '';
+            data['physical_diet'] = form['physical_diet'] ? form['physical_diet'].value : '';
+            // Normalize all values to 0-10 scale
+            function normalize(val, min, max, invert) {
+                if (typeof val !== 'number' || isNaN(val)) return 0;
+                let norm = (val - min) / (max - min);
+                norm = Math.max(0, Math.min(1, norm));
+                if (invert) norm = 1 - norm;
+                return Math.round(norm * 10 * 100) / 100;
+            }
+            // For each stat, normalize
+            const cogStats = [
+                normalize(data.cognitive_focus, 0, 600),
+                normalize(data.cognitive_memory, 0, 20),
+                normalize(data.cognitive_reaction, 100, 1000, true),
+                normalize(data.cognitive_fatigue, 0, 10)
+            ];
+            const phyStats = [
+                normalize(data.physical_speed, 0, 1000),
+                normalize(data.physical_balance, 0, 120),
+                normalize(data.physical_pain, 0, 10, true),
+                normalize(data.physical_flexibility, 0, 100),
+                normalize(data.physical_activity, 0, 24),
+                normalize(data.physical_sleep_hours, 0, 12)
+            ];
+            const emoStats = [
+                normalize(data.emotional_phq, 0, 27, true),
+                normalize(data.emotional_gad, 0, 21, true),
+                normalize(data.emotional_mood, -2, 2),
+                normalize(data.emotional_sentiment, -1, 1)
+            ];
+            const socStats = [
+                normalize(data.social_engagement, 0, 30),
+                normalize(data.social_confidence, 0, 10)
+            ];
+            // Save daily growth data
+            const today = new Date().toISOString().slice(0,10);
+            dailyGrowthData.push({ date: today, ...data });
+            if (dailyGrowthData.length > 30) dailyGrowthData.shift();
+            localStorage.setItem('dailyGrowthData', JSON.stringify(dailyGrowthData));
+
+            // Dynamically set min/max for radar charts based on data
+            function getMinMax(arr) {
+                let min = Math.min(...arr);
+                let max = Math.max(...arr);
+                if (min === max) { min = 0; max = 10; }
+                else {
+                    min = Math.floor(Math.max(0, min - 1));
+                    max = Math.ceil(Math.min(10, max + 1));
+                }
+                return { min, max };
+            }
+            const cogMM = getMinMax(cogStats);
+            const phyMM = getMinMax(phyStats);
+            const emoMM = getMinMax(emoStats);
+            const socMM = getMinMax(socStats);
+
+            // Cognitive
+            const cogLabels = ['Focus','Memory','Reaction','Fatigue'];
+            const cogCtx = document.getElementById('cognitiveRadar').getContext('2d');
+            if (cognitiveRadar) cognitiveRadar.destroy();
+            cognitiveRadar = new Chart(cogCtx, {
+                type: 'radar',
+                data: { labels: cogLabels, datasets: [{ label: 'Cognitive', data: cogStats, backgroundColor: 'rgba(96,165,250,0.2)', borderColor: '#60a5fa', pointBackgroundColor: '#60a5fa', borderWidth: 3 }] },
+                options: { responsive: false, plugins: { legend: { display: false } }, scales: { r: { min: cogMM.min, max: cogMM.max, pointLabels: { font: { family: 'Pacifico', size: 15, color: '#60a5fa' } } } } }
+            });
+            // Physical
+            const phyLabels = ['Speed','Balance','Pain','Flexibility','Activity','Sleep'];
+            const phyCtx = document.getElementById('physicalRadar').getContext('2d');
+            if (physicalRadar) physicalRadar.destroy();
+            physicalRadar = new Chart(phyCtx, {
+                type: 'radar',
+                data: { labels: phyLabels, datasets: [{ label: 'Physical', data: phyStats, backgroundColor: 'rgba(30,58,138,0.2)', borderColor: '#60a5fa', pointBackgroundColor: '#60a5fa', borderWidth: 3 }] },
+                options: { responsive: false, plugins: { legend: { display: false } }, scales: { r: { min: phyMM.min, max: phyMM.max, pointLabels: { font: { family: 'Pacifico', size: 15, color: '#60a5fa' } } } } }
+            });
+            // Emotional
+            const emoLabels = ['Depression','Anxiety','Mood','Sentiment'];
+            const emoCtx = document.getElementById('emotionalRadar').getContext('2d');
+            if (emotionalRadar) emotionalRadar.destroy();
+            emotionalRadar = new Chart(emoCtx, {
+                type: 'radar',
+                data: { labels: emoLabels, datasets: [{ label: 'Emotional', data: emoStats, backgroundColor: 'rgba(96,165,250,0.2)', borderColor: '#60a5fa', pointBackgroundColor: '#60a5fa', borderWidth: 3 }] },
+                options: { responsive: false, plugins: { legend: { display: false } }, scales: { r: { min: emoMM.min, max: emoMM.max, pointLabels: { font: { family: 'Pacifico', size: 15, color: '#60a5fa' } } } } }
+            });
+            // Social
+            const socLabels = ['Engagement','Confidence'];
+            const socCtx = document.getElementById('socialRadar').getContext('2d');
+            if (socialRadar) socialRadar.destroy();
+            socialRadar = new Chart(socCtx, {
+                type: 'radar',
+                data: { labels: socLabels, datasets: [{ label: 'Social', data: socStats, backgroundColor: 'rgba(30,58,138,0.2)', borderColor: '#60a5fa', pointBackgroundColor: '#60a5fa', borderWidth: 3 }] },
+                options: { responsive: false, plugins: { legend: { display: false } }, scales: { r: { min: socMM.min, max: socMM.max, pointLabels: { font: { family: 'Pacifico', size: 15, color: '#60a5fa' } } } } }
+            });
+        });
+
+        // Growth tab logic (AI care plan, daily goals, motivational quote, chart)
+        let growthGoals = JSON.parse(localStorage.getItem('growthGoals') || '[]');
+        let growthChart = null;
+        function renderGrowthTab() {
+            const content = document.getElementById('growthContent');
+            const patientAnswers = JSON.parse(localStorage.getItem('patientAnswers') || '{}');
+            // Check for all required fields (not just length)
+            let allAnswered = true;
+            for (const q of patientQuestions) {
+                if (q.dependsOn) {
+                    const dep = patientAnswers[q.dependsOn.name];
+                    if (!q.dependsOn.values.includes(dep)) continue;
+                }
+                if (q.required && (patientAnswers[q.name] === undefined || patientAnswers[q.name] === '')) {
+                    allAnswered = false;
+                    break;
+                }
+            }
+            if (!allAnswered) {
+                content.innerHTML = `<div class='growth-advice' style='text-align:center;'>
+                    <b>Please complete the Patient Intake Questionnaire to unlock your personalized growth plan.</b><br>
+                    <button class='habit-btn' onclick="document.querySelector('.tab-btn[data-tab=patientTab]').click()">Go to Patient Intake</button>
+                </div>`;
+                return;
+            }
+            // Recommendations
+            let recs = [];
+            if (patientAnswers.injuryType) {
+                if (patientAnswers.injuryType === 'TBI') recs.push('Cognitive exercises, memory games, and regular rest.');
+                if (patientAnswers.injuryType === 'SCI') recs.push('Physical therapy, adaptive equipment, and peer support.');
+                if (patientAnswers.injuryType === 'Depression' || patientAnswers.injuryType === 'PTSD') recs.push('Regular counseling, mindfulness, and social connection.');
+                if (patientAnswers.injuryType === 'ChronicPain') recs.push('Pain management, gentle exercise, and relaxation techniques.');
+                if (patientAnswers.injuryType === 'Other' && patientAnswers.injuryOther) recs.push('Consult a specialist for your specific condition: ' + patientAnswers.injuryOther);
+            }
+            if ((patientAnswers.sleep||0) < 7) recs.push('Aim for at least 7 hours of sleep per night.');
+            if ((patientAnswers.activityLevel||0) < 3) recs.push('Try to get some physical activity at least 3 days a week.');
+            if ((patientAnswers.pain||0) > 5) recs.push('Discuss pain management strategies with your doctor.');
+            if ((patientAnswers.mood||0) < 0) recs.push('Consider mindfulness or talking to a counselor.');
+            if ((patientAnswers.engagement||0) < 3) recs.push('Reach out to friends or join a community group.');
+            // Motivational quote
+            const quotes = [
+                "Every day is a new beginning. Take a deep breath and start again.",
+                "Small steps every day lead to big results.",
+                "You are stronger than you think.",
+                "Progress, not perfection.",
+                "Your only limit is your mind."
+            ];
+            const quote = quotes[Math.floor(Math.random()*quotes.length)];
+            // Growth goals UI
+            let goalsHtml = `<form id='growthGoalForm' style='margin-bottom:24px;'>
+                <div class='input-group'>
+                    <label>New Daily Goal:</label>
+                    <input type='text' id='growthGoalInput' placeholder='e.g. Stand up every hour, Practice mindfulness'>
+                </div>
+                <button type='submit'>Add Goal</button>
+            </form>
+            <div class='growth-goals-list' id='growthGoalsList'></div>`;
+            // Chart
+            let chartHtml = `<div style='margin:32px 0 0 0;'><canvas id='growthChart' width='500' height='320'></canvas></div>`;
+            content.innerHTML = `
+                <div class='growth-advice' style='background:linear-gradient(90deg,#e0f7fa 0%,#b2dfdb 100%);color:#14532d;'><b>Recommended Actions:</b><ul>${recs.map(r=>`<li>${r}</li>`).join('')}</ul></div>
+                <div class='growth-advice' style='font-style:italic;background:#fffde7;color:#333;'>${quote}</div>
+                ${goalsHtml}
+                ${chartHtml}
+            `;
+            renderGrowthGoals();
+            renderGrowthChart();
+            document.getElementById('growthGoalForm').onsubmit = function(e) {
+                e.preventDefault();
+                const text = document.getElementById('growthGoalInput').value.trim();
+                if (text) {
+                    growthGoals.push({ text });
+                    localStorage.setItem('growthGoals', JSON.stringify(growthGoals));
+                    renderGrowthGoals();
+                    document.getElementById('growthGoalInput').value = '';
+                }
+            };
+        }
+        function renderGrowthGoals() {
+            const list = document.getElementById('growthGoalsList');
+            if (!list) return;
+            list.innerHTML = '';
+            growthGoals.forEach((goal, i) => {
+                const div = document.createElement('div');
+                div.className = 'growth-goal-item';
+                div.innerHTML = `<span>${goal.text}</span><button class="habit-btn" onclick="removeGrowthGoal(${i})">Remove</button>`;
+                list.appendChild(div);
+            });
+        }
+        window.removeGrowthGoal = function(i) {
+            growthGoals.splice(i,1);
+            localStorage.setItem('growthGoals', JSON.stringify(growthGoals));
+            renderGrowthGoals();
+        };
+        function renderGrowthChart() {
+            const ctx = document.getElementById('growthChart').getContext('2d');
+            const labels = dailyGrowthData.map(d => d.date);
+            const cog = dailyGrowthData.map(d => (d.cognitive_focus||0)+(d.cognitive_memory||0)+(d.cognitive_reaction||0)+(d.cognitive_fatigue||0));
+            const phy = dailyGrowthData.map(d => (d.physical_speed||0)+(d.physical_balance||0)+(d.physical_pain||0)+(d.physical_flexibility||0)+(d.physical_activity||0)+(d.physical_sleep_hours||0));
+            const emo = dailyGrowthData.map(d => (d.emotional_phq||0)+(d.emotional_gad||0)+(d.emotional_mood||0)+(d.emotional_sentiment||0));
+            const soc = dailyGrowthData.map(d => (d.social_engagement||0)+(d.social_confidence||0));
+            if (growthChart) growthChart.destroy();
+            growthChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [
+                        { label: 'Cognitive', data: cog, borderColor: '#60a5fa', backgroundColor: 'rgba(96,165,250,0.1)', tension: 0.3 },
+                        { label: 'Physical', data: phy, borderColor: '#1e3a8a', backgroundColor: 'rgba(30,58,138,0.1)', tension: 0.3 },
+                        { label: 'Emotional', data: emo, borderColor: '#f59e42', backgroundColor: 'rgba(245,158,66,0.1)', tension: 0.3 },
+                        { label: 'Social', data: soc, borderColor: '#a78bfa', backgroundColor: 'rgba(167,139,250,0.1)', tension: 0.3 }
+                    ]
+                },
+                options: {
+                    plugins: { legend: { labels: { color: '#14532d', font: { family: 'Pacifico', size: 15 } } } },
+                    scales: { x: { ticks: { color: '#60a5fa' } }, y: { ticks: { color: '#60a5fa' } } }
+                }
+            });
+        }
+        // Habit planner logic
+        const habitForm = document.getElementById('habitForm');
+        const habitInput = document.getElementById('habitInput');
+        const habitList = document.getElementById('habitList');
+        let habits = JSON.parse(localStorage.getItem('habits') || '[]');
+        function renderHabits() {
+            habitList.innerHTML = '';
+            habits.forEach((habit, i) => {
+                const div = document.createElement('div');
+                div.className = 'habit-item';
+                div.innerHTML = `<span>${habit.text}</span><button class="habit-btn" onclick="removeHabit(${i})">Remove</button>`;
+                habitList.appendChild(div);
+            });
+        }
+        window.removeHabit = function(i) {
+            habits.splice(i,1);
+            localStorage.setItem('habits', JSON.stringify(habits));
+            renderHabits();
+        };
+
+        // Gemini AI planner logic removed
+        habitForm.onsubmit = function(e) {
+            e.preventDefault();
+            const text = habitInput.value.trim();
+            if (text) {
+                habits.push({ text });
+                localStorage.setItem('habits', JSON.stringify(habits));
+                renderHabits();
+                habitInput.value = '';
+            }
+        };
+        renderHabits();
+        // Add event to open planner.html
+        const openPlannerBtn = document.getElementById('openPlannerBtn');
+        if (openPlannerBtn) {
+            openPlannerBtn.onclick = function() {
+                window.open('planner.html', '_blank');
+            };
+        }
+
+        // Patient Data tab logic (modern, multi-input)
+        const injuryType = document.getElementById('injuryType');
+        const injuryOther = document.getElementById('injuryOther');
+        if (injuryType && injuryOther) {
+            injuryType.addEventListener('change', function() {
+                if (this.value === 'Other' || this.value === 'OtherPhysical' || this.value === 'OtherMental') {
+                    injuryOther.style.display = 'block';
+                } else {
+                    injuryOther.style.display = 'none';
+                    injuryOther.value = '';
+                }
+            });
+        }
+        // Live preview for goals
+        const goalsInput = document.getElementById('goals');
+        const goalsPreview = document.getElementById('goalsPreview');
+        if (goalsInput && goalsPreview) {
+            goalsInput.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    goalsPreview.textContent = this.value;
+                    goalsPreview.style.display = 'block';
+                } else {
+                    goalsPreview.textContent = '';
+                    goalsPreview.style.display = 'none';
+                }
+            });
+        }
+        // Keep output values in sync for sliders
+        ['cognitiveFatigue','pain','activityLevel','phq','gad','mood','confidence'].forEach(id => {
+            const input = document.getElementById(id);
+            const output = document.getElementById(id+"Val");
+            if (input && output) {
+                input.addEventListener('input', () => output.value = input.value);
+                output.value = input.value;
+            }
+        });
+        // Patient Data form submit
+        const patientDataForm = document.getElementById('patientDataForm');
+        const patientDataOutput = document.getElementById('patientDataOutput');
+        if (patientDataForm) {
+            patientDataForm.onsubmit = function(e) {
+                e.preventDefault();
+                const data = {
+                    injuryType: injuryType.value,
+                    injuryOther: injuryOther.value,
+                    goals: goalsInput.value,
+                    cognitiveFatigue: document.getElementById('cognitiveFatigue').value,
+                    pain: document.getElementById('pain').value,
+                    activityLevel: document.getElementById('activityLevel').value,
+                    sleep: document.getElementById('sleep').value,
+                    phq: document.getElementById('phq').value,
+                    gad: document.getElementById('gad').value,
+                    mood: document.getElementById('mood').value,
+                    sentiment: document.getElementById('sentiment').value,
+                    engagement: document.getElementById('engagement').value,
+                    confidence: document.getElementById('confidence').value
+                };
+                let html = `<b>Injury/Trauma Type:</b> ${data.injuryType}`;
+                if (data.injuryOther) html += ` (${data.injuryOther})`;
+                html += `<br/><b>Long-term Goal:</b> ${data.goals}`;
+                html += `<br/><b>Cognitive Fatigue:</b> ${data.cognitiveFatigue}`;
+                html += `<br/><b>Pain:</b> ${data.pain}`;
+                html += `<br/><b>Activity Level:</b> ${data.activityLevel}`;
+                html += `<br/><b>Sleep (hours):</b> ${data.sleep}`;
+                html += `<br/><b>Depression (PHQ):</b> ${data.phq}`;
+                html += `<br/><b>Anxiety (GAD):</b> ${data.gad}`;
+                html += `<br/><b>Mood:</b> ${data.mood}`;
+                html += `<br/><b>Sentiment:</b> ${data.sentiment}`;
+                html += `<br/><b>Engagement:</b> ${data.engagement}`;
+                html += `<br/><b>Confidence:</b> ${data.confidence}`;
+                patientDataOutput.innerHTML = html;
+                patientDataOutput.style.display = 'block';
+            };
+        }
+    </script>
+</body>
+</html>

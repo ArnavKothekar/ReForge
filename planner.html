@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Specialist Life Planner</title>
+  <style>
+    body {
+      font-family: 'Montserrat', Arial, sans-serif;
+      background: #f0f7fa;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 4px 32px #b2dfdbcc;
+      padding: 32px 28px 28px 28px;
+    }
+    h1 {
+      color: #14532d;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    label {
+      font-weight: bold;
+      color: #14532d;
+      display: block;
+      margin-top: 18px;
+      margin-bottom: 6px;
+    }
+    select, button {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1.5px solid #b2dfdb;
+      font-size: 1em;
+      margin-bottom: 12px;
+    }
+    button {
+      background: linear-gradient(90deg, #a7ffeb 0%, #64b5f6 100%);
+      color: #14532d;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: linear-gradient(90deg, #64b5f6 0%, #a7ffeb 100%);
+      color: #0d3b2e;
+    }
+    .result-box {
+      background: #f0f7fa;
+      border-radius: 12px;
+      padding: 18px 16px;
+      margin-top: 18px;
+      color: #14532d;
+      box-shadow: 0 2px 8px #b2dfdb44;
+    }
+    .alt-goal {
+      color: #b71c1c;
+      font-style: italic;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Specialist Life Planner</h1>
+    <form id="plannerForm">
+      <label for="condition">Select Your Condition/Disease:</label>
+      <select id="condition" required>
+        <option value="">-- Choose --</option>
+        <option value="SCI">Spinal Cord Injury</option>
+        <option value="TBI">Traumatic Brain Injury</option>
+        <option value="Autism">Autism Spectrum Disorder</option>
+        <option value="Stroke">Stroke</option>
+        <option value="ChronicPain">Chronic Pain</option>
+        <option value="Depression">Depression</option>
+        <option value="Other">Other</option>
+      </select>
+      <label for="goal">Select Desired End Goal:</label>
+      <select id="goal" required>
+        <option value="">-- Choose --</option>
+        <option value="independence">Live Independently</option>
+        <option value="employment">Gainful Employment</option>
+        <option value="education">Further Education</option>
+        <option value="travel">Travel</option>
+        <option value="social">Build Social Connections</option>
+        <option value="manage">Manage Symptoms</option>
+      </select>
+      <button type="submit">Show Plan</button>
+    </form>
+    <div id="result" class="result-box" style="display:none;"></div>
+  </div>
+  <script>
+    // Hardcoded advice, goals, and specialist data
+    const conditionData = {
+      SCI: {
+        advice: "Focus on physical therapy, adaptive equipment, and peer support. Maintain skin care and monitor for secondary complications.",
+        specialist: "Mobility level, pain triggers, bladder/bowel function, skin integrity, spasticity, assistive device needs.",
+        incompatible: ["travel"],
+        altGoals: ["independence", "employment", "manage"]
+      },
+      TBI: {
+        advice: "Cognitive exercises, memory aids, and regular rest. Monitor for mood changes and seek neuropsychological support.",
+        specialist: "Cognitive assessment, memory function, behavioral changes, fatigue level, support system.",
+        incompatible: [],
+        altGoals: ["education", "manage"]
+      },
+      Autism: {
+        advice: "Structured routines, social skills training, and sensory-friendly environments. Encourage self-advocacy.",
+        specialist: "Sensory sensitivities, communication style, support needs, co-occurring conditions.",
+        incompatible: [],
+        altGoals: ["social", "education"]
+      },
+      Stroke: {
+        advice: "Rehabilitation, speech therapy, and gradual increase in activity. Monitor for depression and fall risk.",
+        specialist: "Motor function, speech/language ability, cognitive status, risk factors, home environment.",
+        incompatible: [],
+        altGoals: ["independence", "manage"]
+      },
+      ChronicPain: {
+        advice: "Pain management, gentle exercise, and relaxation techniques. Avoid overexertion and track triggers.",
+        specialist: "Pain location/intensity, medication use, activity tolerance, sleep quality, mental health.",
+        incompatible: ["travel", "employment"],
+        altGoals: ["manage", "independence"]
+      },
+      Depression: {
+        advice: "Regular counseling, mindfulness, and social connection. Monitor for changes in mood and motivation.",
+        specialist: "Mood history, medication, support system, sleep/appetite, risk factors.",
+        incompatible: ["travel"],
+        altGoals: ["manage", "social"]
+      },
+      Other: {
+        advice: "Consult a specialist for your specific condition. Set realistic, meaningful goals and seek support.",
+        specialist: "Diagnosis details, current challenges, support needs.",
+        incompatible: [],
+        altGoals: ["manage"]
+      }
+    };
+    const goalLabels = {
+      independence: "Live Independently",
+      employment: "Gainful Employment",
+      education: "Further Education",
+      travel: "Travel",
+      social: "Build Social Connections",
+      manage: "Manage Symptoms"
+    };
+    document.getElementById('plannerForm').onsubmit = function(e) {
+      e.preventDefault();
+      const cond = document.getElementById('condition').value;
+      const goal = document.getElementById('goal').value;
+      if (!cond || !goal) return;
+      const data = conditionData[cond];
+      let html = `<b>General Advice:</b> ${data.advice}<br><br>`;
+      if (data.incompatible.includes(goal)) {
+        html += `<b>Selected End Goal:</b> <span style='color:#b71c1c;'>${goalLabels[goal]} (Not typically compatible with this condition)</span><br>`;
+        html += `<div class='alt-goal'>Alternative Goals: ${data.altGoals.map(g=>goalLabels[g]).join(', ')}</div>`;
+      } else {
+        html += `<b>Selected End Goal:</b> ${goalLabels[goal]}<br>`;
+      }
+      html += `<br><b>Specialist Data to Collect:</b> ${data.specialist}`;
+      document.getElementById('result').innerHTML = html;
+      document.getElementById('result').style.display = 'block';
+    };
+  </script>
+</body>
+</html>
