@@ -5,7 +5,6 @@ const cors = require('cors');
 const PORT = 3000;
 
 // Replace with your Gemini API key
-const GEMINI_API_KEY = 'AIzaSyA72F6z090N5zZHNNvcl_FMtlbvSQqBVNo';
 
 
 app.use(cors());
