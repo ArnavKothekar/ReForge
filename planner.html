@@ -80,6 +80,11 @@
         <option value="Stroke">Stroke</option>
         <option value="ChronicPain">Chronic Pain</option>
         <option value="Depression">Depression</option>
+        <option value="Diabetes">Diabetes</option>
+        <option value="Cancer">Cancer</option>
+        <option value="Heart">Heart Disease</option>
+        <option value="Anxiety">Anxiety Disorder</option>
+        <option value="PTSD">PTSD</option>
         <option value="Other">Other</option>
       </select>
       <label for="goal">Select Desired End Goal:</label>
@@ -91,6 +96,10 @@
         <option value="travel">Travel</option>
         <option value="social">Build Social Connections</option>
         <option value="manage">Manage Symptoms</option>
+        <option value="family">Start/Support a Family</option>
+        <option value="sports">Participate in Sports</option>
+        <option value="volunteer">Volunteer/Community Service</option>
+        <option value="creative">Pursue Creative Hobbies</option>
       </select>
       <button type="submit">Show Plan</button>
     </form>
@@ -100,46 +109,76 @@
     // Hardcoded advice, goals, and specialist data
     const conditionData = {
       SCI: {
-        advice: "Focus on physical therapy, adaptive equipment, and peer support. Maintain skin care and monitor for secondary complications.",
-        specialist: "Mobility level, pain triggers, bladder/bowel function, skin integrity, spasticity, assistive device needs.",
-        incompatible: ["travel"],
-        altGoals: ["independence", "employment", "manage"]
+        advice: "Focus on physical therapy, adaptive equipment, and peer support. Maintain skin care, monitor for secondary complications, and consider adaptive sports or creative hobbies for well-being.",
+        specialist: "Mobility level, pain triggers, bladder/bowel function, skin integrity, spasticity, assistive device needs, social support, mental health.",
+        incompatible: ["travel", "sports"],
+        altGoals: ["independence", "employment", "manage", "creative"]
       },
       TBI: {
-        advice: "Cognitive exercises, memory aids, and regular rest. Monitor for mood changes and seek neuropsychological support.",
-        specialist: "Cognitive assessment, memory function, behavioral changes, fatigue level, support system.",
-        incompatible: [],
-        altGoals: ["education", "manage"]
+        advice: "Cognitive exercises, memory aids, and regular rest. Monitor for mood changes, seek neuropsychological support, and try creative or volunteer activities.",
+        specialist: "Cognitive assessment, memory function, behavioral changes, fatigue level, support system, emotional regulation.",
+        incompatible: ["sports"],
+        altGoals: ["education", "manage", "creative"]
       },
       Autism: {
-        advice: "Structured routines, social skills training, and sensory-friendly environments. Encourage self-advocacy.",
-        specialist: "Sensory sensitivities, communication style, support needs, co-occurring conditions.",
-        incompatible: [],
-        altGoals: ["social", "education"]
+        advice: "Structured routines, social skills training, and sensory-friendly environments. Encourage self-advocacy, creative hobbies, and community engagement.",
+        specialist: "Sensory sensitivities, communication style, support needs, co-occurring conditions, interests.",
+        incompatible: ["travel"],
+        altGoals: ["social", "education", "creative"]
       },
       Stroke: {
-        advice: "Rehabilitation, speech therapy, and gradual increase in activity. Monitor for depression and fall risk.",
-        specialist: "Motor function, speech/language ability, cognitive status, risk factors, home environment.",
-        incompatible: [],
-        altGoals: ["independence", "manage"]
+        advice: "Rehabilitation, speech therapy, and gradual increase in activity. Monitor for depression, fall risk, and support creative or family goals.",
+        specialist: "Motor function, speech/language ability, cognitive status, risk factors, home environment, family support.",
+        incompatible: ["sports"],
+        altGoals: ["independence", "manage", "family"]
       },
       ChronicPain: {
-        advice: "Pain management, gentle exercise, and relaxation techniques. Avoid overexertion and track triggers.",
-        specialist: "Pain location/intensity, medication use, activity tolerance, sleep quality, mental health.",
-        incompatible: ["travel", "employment"],
-        altGoals: ["manage", "independence"]
+        advice: "Pain management, gentle exercise, and relaxation techniques. Avoid overexertion, track triggers, and consider creative or volunteer work.",
+        specialist: "Pain location/intensity, medication use, activity tolerance, sleep quality, mental health, coping strategies.",
+        incompatible: ["travel", "employment", "sports"],
+        altGoals: ["manage", "independence", "creative"]
       },
       Depression: {
-        advice: "Regular counseling, mindfulness, and social connection. Monitor for changes in mood and motivation.",
-        specialist: "Mood history, medication, support system, sleep/appetite, risk factors.",
+        advice: "Regular counseling, mindfulness, and social connection. Monitor for changes in mood and motivation, and try creative or volunteer activities.",
+        specialist: "Mood history, medication, support system, sleep/appetite, risk factors, recent stressors.",
+        incompatible: ["travel", "sports"],
+        altGoals: ["manage", "social", "creative"]
+      },
+      Diabetes: {
+        advice: "Monitor blood sugar, maintain a healthy diet, regular exercise, and attend checkups. Community support and creative hobbies can help.",
+        specialist: "Blood glucose records, medication/insulin use, diet, activity level, complications, mental health.",
         incompatible: ["travel"],
-        altGoals: ["manage", "social"]
+        altGoals: ["manage", "independence", "creative"]
+      },
+      Cancer: {
+        advice: "Follow treatment plan, maintain nutrition, and seek emotional support. Volunteer or creative activities can provide meaning.",
+        specialist: "Diagnosis/stage, treatment plan, symptoms, support system, mental health, goals of care.",
+        incompatible: ["sports", "travel"],
+        altGoals: ["manage", "volunteer", "creative"]
+      },
+      Heart: {
+        advice: "Follow cardiac rehab, monitor symptoms, maintain a heart-healthy lifestyle, and consider community or creative engagement.",
+        specialist: "Cardiac history, medications, activity tolerance, risk factors, support system.",
+        incompatible: ["sports", "travel"],
+        altGoals: ["manage", "independence", "volunteer"]
+      },
+      Anxiety: {
+        advice: "Practice relaxation, mindfulness, and gradual exposure. Build social support and try creative or volunteer activities.",
+        specialist: "Anxiety triggers, coping skills, medication, support system, sleep.",
+        incompatible: ["travel"],
+        altGoals: ["manage", "social", "creative"]
+      },
+      PTSD: {
+        advice: "Trauma-informed therapy, safe environments, and gradual exposure. Creative expression and volunteering can help recovery.",
+        specialist: "Trauma history, symptoms, coping skills, support system, risk factors.",
+        incompatible: ["travel", "sports"],
+        altGoals: ["manage", "volunteer", "creative"]
       },
       Other: {
-        advice: "Consult a specialist for your specific condition. Set realistic, meaningful goals and seek support.",
-        specialist: "Diagnosis details, current challenges, support needs.",
+        advice: "Consult a specialist for your specific condition. Set realistic, meaningful goals and seek support. Creative and community activities are often helpful.",
+        specialist: "Diagnosis details, current challenges, support needs, interests.",
         incompatible: [],
-        altGoals: ["manage"]
+        altGoals: ["manage", "creative"]
       }
     };
     const goalLabels = {
@@ -148,7 +187,11 @@
       education: "Further Education",
       travel: "Travel",
       social: "Build Social Connections",
-      manage: "Manage Symptoms"
+      manage: "Manage Symptoms",
+      family: "Start/Support a Family",
+      sports: "Participate in Sports",
+      volunteer: "Volunteer/Community Service",
+      creative: "Pursue Creative Hobbies"
     };
     document.getElementById('plannerForm').onsubmit = function(e) {
       e.preventDefault();
